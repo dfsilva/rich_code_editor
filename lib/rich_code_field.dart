@@ -68,6 +68,12 @@ class _PzCodeFieldSelectionGestureDetectorBuilder extends TextSelectionGestureDe
             cause: SelectionChangedCause.longPress,
           );
           break;
+        default:
+          renderEditable.selectWordsInRange(
+            from: details.globalPosition - details.offsetFromOrigin,
+            to: details.globalPosition,
+            cause: SelectionChangedCause.longPress,
+          );
       }
     }
   }
@@ -82,6 +88,9 @@ class _PzCodeFieldSelectionGestureDetectorBuilder extends TextSelectionGestureDe
           break;
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
+          renderEditable.selectPosition(cause: SelectionChangedCause.tap);
+          break;
+        default:
           renderEditable.selectPosition(cause: SelectionChangedCause.tap);
           break;
       }
@@ -103,6 +112,10 @@ class _PzCodeFieldSelectionGestureDetectorBuilder extends TextSelectionGestureDe
           break;
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
+          renderEditable.selectWord(cause: SelectionChangedCause.longPress);
+          Feedback.forLongPress(_state.context);
+          break;
+        default:
           renderEditable.selectWord(cause: SelectionChangedCause.longPress);
           Feedback.forLongPress(_state.context);
           break;
@@ -958,6 +971,15 @@ class _RichCodeFieldState extends State<RichCodeField> implements TextSelectionG
         cursorOpacityAnimates = false;
         cursorColor ??= themeData.cursorColor;
         break;
+
+      default:
+        forcePressEnabled = false;
+        textSelectionControls = materialTextSelectionControls;
+        paintCursorAboveText = false;
+        cursorOpacityAnimates = false;
+        cursorColor ??= themeData.cursorColor;
+        break;
+
     }
 
     Widget child = RepaintBoundary(
